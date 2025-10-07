@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -14,20 +13,19 @@ import lombok.Data;
 @Table("customer")
 public class Customer {
 
-    @NotNull
     @Id
     @Column("customer_id")
-    private Long customerId;
+    private Long customerId; // Do NOT use @GeneratedValue with R2DBC
 
-    @NotBlank
+    @NotBlank(message = "Name is mandatory")
     @Column("name")
     private String name;
 
-    @Email
+    @Email(message = "Invalid email format")
     @Column("email")
     private String email;
 
-    @Pattern(regexp = "\\d{10}")
+    @Pattern(regexp = "\\d{10}", message = "Phone must be 10 digits")
     @Column("phone")
     private String phone;
 
