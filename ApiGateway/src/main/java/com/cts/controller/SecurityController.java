@@ -20,8 +20,7 @@ public class SecurityController {
 	private final SecurityService service;
 	
 	@PostMapping("/register")
-	public Mono<String> register(@RequestBody User user) {
-		
+	public Mono<String> register(@RequestBody User user) {		
 		return  service.register(user);
 	}
 	
