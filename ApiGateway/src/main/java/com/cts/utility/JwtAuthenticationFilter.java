@@ -38,5 +38,4 @@ public class JwtAuthenticationFilter implements WebFilter{
 		}
 		return chain.filter(exchange);
 	}
-
 }
