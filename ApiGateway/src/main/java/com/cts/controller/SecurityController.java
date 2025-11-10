@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("apigateway/")
+@RequestMapping("/apigateway")
 @RequiredArgsConstructor
 public class SecurityController {
 
