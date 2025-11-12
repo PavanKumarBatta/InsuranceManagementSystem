@@ -25,19 +25,19 @@ public class SecurityServiceImpl implements SecurityService {
 		
 		String name=user.getUserName();
 		if(name==null) {
-			throw new BadRequestException(400,"username shouldnot be null");
+			return Mono.error(new BadRequestException(400,"username shouldnot be null"));
 		}
 		if(user.getPassword()==null) {
-			throw new BadRequestException(400,"Password shouldnot be null");
+			return Mono.error(new BadRequestException(400,"Password shouldnot be null"));
 		}
 		if(user.getRole()==null) {
-			throw new BadRequestException(400,"Role shouldnot be empty");
+			return Mono.error( new BadRequestException(400,"Role shouldnot be empty"));
 		}
+		
 		boolean response=repo.existsByUserName(name);
 		
 		if(response) {
-			
-			throw new  UserAlreadyExistsException(400,"user with username already exists");
+			return Mono.error(new  UserAlreadyExistsException(400,"user with username already exists"));
 		}
 		
 		User newUser=user.toBuilder()

@@ -9,6 +9,7 @@ public class BadRequestException extends RuntimeException {
 	private String message;
 	private int status;
 	public BadRequestException(int status,String message) {
-		this.message=message;
+		super(message);
+		this.status=status;
 	}
 }
