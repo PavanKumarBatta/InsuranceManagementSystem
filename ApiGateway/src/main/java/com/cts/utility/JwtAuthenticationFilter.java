@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -14,6 +15,7 @@ import org.springframework.web.server.WebFilterChain;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
+@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter implements WebFilter{
 

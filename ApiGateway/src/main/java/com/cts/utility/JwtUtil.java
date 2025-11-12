@@ -19,7 +19,7 @@ public class JwtUtil {
 	private final Key key=Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 	
 	
-	String generateToken(String userName,String role) {
+	public String generateToken(String userName,String role) {
 		
 		return Jwts.builder().setSubject(userName).claim("role",role)
 				.setIssuedAt(new Date())
