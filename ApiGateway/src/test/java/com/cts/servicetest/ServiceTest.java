@@ -108,6 +108,7 @@ public class ServiceTest {
 		 String token = "fixedToken123";
 		when(repo.findByUserName(userLogin.getUserName())).thenReturn(Mono.just(mockUser));
 		when(jwtUtil.generateToken(userLogin.getUserName(), userLogin.getRole())).thenReturn(token);
+		
 		//Act
 		Mono<String>response=service.login(userLogin);
 		
@@ -115,5 +116,27 @@ public class ServiceTest {
 		StepVerifier.create(response)
 		.expectNext(token)
 		.verifyComplete();
+	}
+	
+	@Test
+	void testLogin_passwordIncorrect() {
+		//Arrange
+		UserLogin userLogin=new UserLogin("Pavan","asdffg","ADMIN");
+		
+		User mockUser=User.builder()
+				.userName("Pavan")
+				.password(new BCryptPasswordEncoder().encode("Pavan@123"))
+				.role("ADMIN")
+				.build();
+		
+		when(repo.findByUserName(userLogin.getUserName())).thenReturn(Mono.just(mockUser));
+		when(encoder.matches(userLogin.getPassword(), mockUser.getPassword())).thenReturn(false);
+		//Act
+		Mono<String>response=service.login(userLogin);
+		//Assert
+		StepVerifier.create(response)
+		.expectErrorMatches(t->t instanceof BadRequestException &&
+				t.getMessage().contains("Password is incorrect"))
+		.verify();
 	}
 }
