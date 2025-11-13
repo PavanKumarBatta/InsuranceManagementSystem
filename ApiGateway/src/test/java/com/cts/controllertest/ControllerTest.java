@@ -139,7 +139,6 @@ public class ControllerTest {
     	Mono<String>response=controller.login(userLogin);
  
     	//Assert
-    	
     	StepVerifier.create(response)
     	.expectErrorMatches(throwable->throwable instanceof BadRequestException && 
     			throwable.getMessage().contains("Password incorrect"))

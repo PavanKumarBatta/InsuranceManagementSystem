@@ -1,8 +1,6 @@
 package com.cts.servicetest;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.cts.exception.BadRequestException;
 import com.cts.model.User;
+import com.cts.model.UserLogin;
 import com.cts.repository.SecurityRepository;
 import com.cts.service.SecurityServiceImpl;
 import com.cts.utility.JwtUtil;
@@ -68,6 +67,53 @@ public class ServiceTest {
 	            .expectErrorMatches(t ->
 	                    t instanceof BadRequestException &&
 	                    t.getMessage().contains("username shouldnot be null"))
-	            .verify();
+	            		.verify();
+	}
+	
+	@Test
+	void testRegister_failure2() {
+		//Arrange
+		User user=new User(1L,"Pavan",null,"ADMIN");
+		//Act
+		Mono<String> response=service.register(user);
+		//Assert
+		StepVerifier.create(response).expectErrorMatches(t->
+				t instanceof BadRequestException &&
+				t.getMessage().contains("Password shouldnot be null"))
+				.verify();
+	}
+	
+	@Test
+	void testRegister_failure3() {
+		//Arrange
+		User user=new User(1L,"Pavan","Pavan@123",null);
+		//Act
+		Mono<String>response=service.register(user);
+		//Assert
+		StepVerifier.create(response).expectErrorMatches(t->
+			t instanceof BadRequestException &&
+			t.getMessage().contains("Role shouldnot be empty"))
+			.verify();
+	}
+	
+	@Test
+	void testLogin() {
+		//Arrange
+		UserLogin userLogin=new UserLogin("Pavan","Pavan@123","ADMIN");
+		User mockUser = User.builder()
+	            .userName("Pavan")
+	            .password(new BCryptPasswordEncoder().encode("Pavan@123"))
+	            .role("ADMIN")
+	            .build();
+		 String token = "fixedToken123";
+		when(repo.findByUserName(userLogin.getUserName())).thenReturn(Mono.just(mockUser));
+		when(jwtUtil.generateToken(userLogin.getUserName(), userLogin.getRole())).thenReturn(token);
+		//Act
+		Mono<String>response=service.login(userLogin);
+		
+		//Assert
+		StepVerifier.create(response)
+		.expectNext(token)
+		.verifyComplete();
 	}
 }
